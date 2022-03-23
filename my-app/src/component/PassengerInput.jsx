@@ -1,31 +1,30 @@
-import {Component} from "react";
+import {useState} from "react";
 
-class PassenggerInput extends Component {
-  state = {
+function PassenggerInput(props) {
+  const [data, setData] = useState({
     nama: "",
     umur: "",
     jenisKelamin: "Pria",
-    editing: true,
+  });
+
+  const [editing, setEditing] = useState(true);
+
+  const onChange = (e) => {
+    setData({...data, [e.target.name]: e.target.value});
   };
 
-  onChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const formIsNotEmpty = this.state.nama && this.state.umur && this.state.jenisKelamin;
+    const formIsNotEmpty = data.nama && data.umur && data.jenisKelamin;
     if (formIsNotEmpty) {
       const newData = {
-        nama: this.state.nama,
-        umur: this.state.umur,
-        jenisKelamin: this.state.jenisKelamin,
+        nama: data.nama,
+        umur: data.umur,
+        jenisKelamin: data.jenisKelamin,
       };
 
-      this.props.tambahPengunjung(newData);
-      this.setState({
+      props.tambahPengunjung(newData);
+      setData({
         nama: "",
         umur: "",
         jenisKelamin: "Pria",
@@ -35,66 +34,60 @@ class PassenggerInput extends Component {
     }
   };
 
-  handleBukaInput = () => {
-    this.setState({
-      editing: false,
-    });
+  const handleBukaInput = () => {
+    setEditing(false);
   };
 
-  handleTutupInput = () => {
-    this.setState({
-      editing: true,
-    });
+  const handleTutupInput = () => {
+    setEditing(true);
   };
 
-  render() {
-    const viewMode = {};
-    const editMode = {};
+  const viewMode = {};
+  const editMode = {};
 
-    if (this.state.editing) {
-      viewMode.display = "none";
-    } else {
-      editMode.display = "none";
-    }
-
-    return (
-      <div>
-        <div style={viewMode}>
-          <p>Masukkan nama anda</p>
-          <input
-            type="text"
-            placeholder="Nama anda..."
-            value={this.state.nama}
-            name="nama"
-            onChange={this.onChange}
-          />
-          <p>Masukkan umur anda</p>
-          <input
-            type="text"
-            placeholder="Umur anda..."
-            value={this.state.umur}
-            name="umur"
-            onChange={this.onChange}
-          />
-          <p>Masukkan jenis jelamin anda</p>
-          <select name="jenisKelamin" onChange={this.onChange}>
-            <option value="Pria" selected>
-              Pria
-            </option>
-            <option value="Wanita">Wanita</option>
-          </select>
-
-          <button onClick={this.handleSubmit}>Submit</button>
-          <button onClick={this.handleTutupInput}>Selesai</button>
-        </div>
-        <div>
-          <button onClick={this.handleBukaInput} style={editMode}>
-            Masukkan nama Penumpang
-          </button>
-        </div>
-      </div>
-    );
+  if (editing) {
+    viewMode.display = "none";
+  } else {
+    editMode.display = "none";
   }
+
+  return (
+    <div>
+      <div style={viewMode}>
+        <p>Masukkan nama anda</p>
+        <input
+          type="text"
+          placeholder="Nama anda..."
+          value={data.nama}
+          name="nama"
+          onChange={onChange}
+        />
+        <p>Masukkan umur anda</p>
+        <input
+          type="text"
+          placeholder="Umur anda..."
+          value={data.umur}
+          name="umur"
+          onChange={onChange}
+        />
+        <p>Masukkan jenis jelamin anda</p>
+        <select name="jenisKelamin" onChange={onChange}>
+          <option value="Pria" selected>
+            Pria
+          </option>
+          <option value="Wanita">Wanita</option>
+        </select>
+
+        <button onClick={handleSubmit}>Submit</button>
+        <button onClick={handleTutupInput}>Selesai</button>
+      </div>
+      <div>
+        <button onClick={handleBukaInput} style={editMode}>
+          Masukkan nama Penumpang
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default PassenggerInput;
